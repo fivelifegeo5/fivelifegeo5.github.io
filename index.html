@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>5LIFE GEO</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; background: #f5f5f5; }
+    .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+    .btn { background: #6f42c1; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 16px; cursor: pointer; margin: 5px; }
+  </style>
+</head>
+<body>
+  <div class="card" id="user">
+    <h2>Welcome Pioneer!</h2>
+    <p>5LIFE GEO Mining</p>
+    <button class="btn" id="connectBtn" onclick="login()">Connect Pi Wallet</button>
+    <br><br>
+    <button class="btn" onclick="share()">Share App</button>
+  </div>
+
 <script>
 const Pi = window.Pi;
 Pi.init({ version: "2.0" });
@@ -8,23 +30,25 @@ async function login(){
     const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
     document.getElementById('user').innerHTML = 
       `<h3>Welcome @${auth.user.username}!</h3>
-       <p style="color:#0f0">✅ Wallet Connected</p>
+       <p style="color:green">✅ Wallet Connected</p>
        <button class="btn" onclick="startMining()">Start Mining 5LIFE</button>`;
-    
   }catch(e){ alert("Login failed: " + e.message); }
 }
 
 function onIncompletePaymentFound(payment){ console.log("Incomplete", payment); }
 
 function share(){
-  if(navigator.share){ 
-    navigator.share({title:'5LIFE GEO', url:'https://fivelifegeo5.github.io'}); 
-  } else { 
-    alert('Share: https://fivelifegeo5.github.io'); 
+  if(navigator.share){
+    navigator.share({title:'5LIFE GEO', url:'https://fivelifegeo5.github.io'});
+  } else {
+    alert('Share: https://fivelifegeo5.github.io');
   }
 }
 
 function startMining(){
-  alert("Mining started for @geovaniepascual! Location-based mining coming soon!");
+  alert("Mining started for you! Location-based mining coming soon!");
 }
 </script>
+
+</body>
+</html>
