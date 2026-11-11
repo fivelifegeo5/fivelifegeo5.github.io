@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5LIFE GEO - Official Pi Token</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<style>
+body{margin:0;font-family:Arial;background:#0f0f0f;color:#fff;text-align:center}
+header{padding:20px;background:#1a1a1a}
+h1{color:#ff3b9a;margin:0}
+.btn{padding:15px 30px;margin:10px;background:linear-gradient(90deg,#ff3b9a,#7c4dff);border:none;border-radius:30px;color:#fff;font-weight:bold;font-size:18px}
+.card{background:#1e1e1e;margin:20px;padding:20px;border-radius:15px}
+a{color:#7c4dff}
+</style>
+</head>
+<body>
+<header>
+<h1>5LIFE GEO</h1>
+<p>Official Pi Network Token by fivelifegeo</p>
+</header>
+
+<div class="card">
+<h2>Welcome Pioneer!</h2>
+<p>Connect your Pi Wallet to start earning 5LIFE</p>
+<button class="btn" onclick="login()">Connect Pi Wallet</button>
+<button class="btn" onclick="share()">Share App</button>
+<p id="user"></p>
+</div>
+
+<div class="card">
+<h3>About 5LIFE GEO</h3>
+<p>Location-based mining & Pi utilities ecosystem.</p>
+<p><a href="/privacy.html">Privacy Policy</a> | <a href="/terms.html">Terms of Service</a></p>
+<p>Domain verified: fivelifegeo.github.io</p>
+</div>
+
+<script>
+const Pi = window.Pi;
+Pi.init({ version: "2.0", sandbox: true });
+
+async function login(){
+ try{
+  const scopes = ['username','payments'];
+  const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+  document.getElementById('user').innerText = "Welcome @" + auth.user.username;
+  alert("Connected as @" + auth.user.username);
+ }catch(e){ alert("Login failed: " + e.message); }
+}
+function onIncompletePaymentFound(payment){ console.log("Incomplete", payment); }
+function share(){
+ if(navigator.share){ navigator.share({title:'5LIFE GEO', url:'https://fivelifegeo.github.io'}); }
+ else{ alert("Share: https://fivelifegeo.github.io"); }
+}
+</script>
+</body>
+</html>
