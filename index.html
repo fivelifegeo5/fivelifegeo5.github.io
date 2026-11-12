@@ -1,139 +1,201 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>5LIFE GEO - Mainnet Official</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>5LIFE GEO - MAINNET</title>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
-body{font-family:sans-serif;text-align:center;padding:15px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;margin:0}
-.card{background:white;padding:22px;border-radius:22px;max-width:420px;margin:20px auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.btn{background:#6f42c1;color:white;border:none;padding:14px 20px;border-radius:12px;font-size:16px;cursor:pointer;margin:6px;width:95%;font-weight:bold}
-.btn-green{background:#28a745} .btn-red{background:#dc3545} .btn-orange{background:#ff9800}
-.badge{background:#00c853;color:white;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:bold}
-.mining{font-size:34px;font-weight:bold;margin:12px 0;color:#6f42c1}
-.timer{background:#ede7f6;padding:12px;border-radius:12px;margin:12px 0;font-family:monospace;font-weight:bold;border:1px solid #d1c4e9}
-.stats{display:flex;justify-content:space-around;margin:12px 0;font-size:13px;background:#f5f5f5;padding:10px;border-radius:10px}
-.leader{text-align:left;background:#f8f9fa;padding:12px;border-radius:12px;margin-top:12px;font-size:13px;border:1px solid #eee}
-.footer{margin-top:15px;font-size:12px} .footer a{color:#6f42c1;text-decoration:none;margin:0 5px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto}
+body{background:#f5f0ff;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.header{background:#6f42c1;color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:18px;display:flex;gap:8px;align-items:center}
+.badge{background:#28a745;color:white;font-size:10px;padding:3px 10px;border-radius:10px;font-weight:800}
+.content{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px}
+.balance-card{background:linear-gradient(135deg,#6f42c1,#9c27b0);color:white;border-radius:20px;padding:20px;text-align:center;box-shadow:0 10px 20px rgba(111,66,193,.3)}
+.balance-card .label{opacity:.8;font-size:12px;letter-spacing:1px}
+.balance-card .amount{font-size:38px;font-weight:900;margin:6px 0}
+.balance-card .sub{font-size:12px;display:flex;gap:12px;justify-content:center;margin-top:10px}
+.mine-circle{width:180px;height:180px;border-radius:50%;margin:25px auto;background:conic-gradient(from 0deg,#6f42c1,#ff9800,#6f42c1);display:flex;align-items:center;justify-content:center;position:relative;animation:spin 3s linear infinite paused}
+.mine-circle.active{animation-play-state:running}
+.mine-circle .inner{width:160px;height:160px;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 0 20px rgba(0,0,0,.1)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.timer-card{background:white;border-radius:14px;padding:12px;margin:14px 0;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.btn-main{width:100%;padding:16px;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin:6px 0}
+.btn-mine{background:#28a745;color:white}
+.btn-stop{background:#dc3545;color:white}
+.btn-geo{background:#ff9800;color:white}
+.btn-invite{background:#25D366;color:white}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.stat-box{background:white;border-radius:12px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.stat-box b{font-size:18px;color:#6f42c1}
+.leader{background:white;border-radius:14px;padding:14px;margin-top:10px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 14px;border-top:1px solid #eee}
+.nav-item{text-align:center;font-size:11px;color:#999;cursor:pointer;flex:1}
+.nav-item.active{color:#6f42c1;font-weight:700}
+.nav-item .icon{font-size:22px;display:block;margin-bottom:2px}
+.footer-links{text-align:center;margin:20px 0;font-size:12px;color:#6f42c1}
+.footer-links a{color:#6f42c1;text-decoration:none;margin:0 8px}
 </style>
 </head>
 <body>
-<div class="card">
-<h2 style="margin:5px">5LIFE GEO ⛏️</h2>
-<span class="badge">MAINNET LIVE - fivelifegeo5</span>
-<p id="userInfo">Welcome Pioneer!</p>
-
-<div id="balanceBox" style="display:none">
-<div class="mining">⛏️ <span id="balance">0.00</span> 5LIFE</div>
-<div class="stats">
-<span>👥 <b id="refCount">0</b> Ref</span>
-<span>🌍 <b id="geoBonus">+0%</b></span>
+<div class="header">
+<h1>⛏️ 5LIFE GEO</h1>
+<div><span class="badge">MAINNET</span> <span id="userBadge" style="font-size:12px;margin-left:6px"></span></div>
+</div>
+<div class="content" id="app">
+<div class="balance-card">
+<div class="label">TOTAL 5LIFE BALANCE</div>
+<div class="amount">⛏️ <span id="balance">0.00</span></div>
+<div class="sub">
 <span>⚡ <b id="rate">0.10</b>/s</span>
-</div>
-<div class="timer" id="timer">⏰ Session: 24:00:00</div>
-<div id="geoStatus" style="font-size:12px;color:green"></div>
-</div>
-
-<button class="btn" id="connectBtn" onclick="login()">🔗 Connect Pi Wallet (Mainnet)</button>
-<button class="btn btn-green" id="mineBtn" onclick="toggleMining()" style="display:none">⛏️ Start Mining</button>
-<button class="btn btn-orange" id="geoBtn" onclick="checkLocation()" style="display:none">📍 Enable GEO Bonus (+25%)</button>
-<button class="btn" onclick="shareApp()" style="background:#25D366">📤 Invite & Earn +10%</button>
-
-<div class="leader"><b>🏆 Top Miners - Mainnet</b><br><div id="leaderList">Loading...</div></div>
-
-<p id="status" style="font-size:12px;color:#666;margin:10px"></p>
-<div class="footer">
-<a href="privacy.html">Privacy</a> | <a href="terms.html">TOS</a> | <a href="#" onclick="resetData()">Reset</a><br>
-<small id="refInfo" style="color:#6f42c1;font-weight:bold"></small><br>
-<small style="color:#999">Mainnet: fivelifegeo5.github.io<br>Testnet: fivelifegeo.github.io<br>© 2026 5LIFE GEO</small>
+<span>👥 <b id="refCount">0</b> Refs</span>
+<span>🌍 <b id="geoBonus">+0%</b></span>
 </div>
 </div>
-
+<div class="mine-circle" id="mineCircle">
+<div class="inner">
+<div style="font-size:40px">⛏️</div>
+<div id="mineStatus" style="font-size:12px;font-weight:700;margin-top:4px">NOT MINING</div>
+<div id="balanceMini" style="font-size:14px;color:#6f42c1;font-weight:800">0.00 5LIFE</div>
+</div>
+</div>
+<div class="timer-card">
+<div><b>⏰ Mining Session</b><br><small style="color:#666">Resets every 24h</small></div>
+<div id="timer" style="font-family:monospace;font-weight:800">24:00:00</div>
+</div>
+<button class="btn-main" id="connectBtn" onclick="login()" style="background:#6f42c1;color:white">🔗 Connect Pi Wallet</button>
+<button class="btn-main btn-mine" id="mineBtn" onclick="toggleMining()" style="display:none">▶️ Start Mining</button>
+<button class="btn-main btn-geo" id="geoBtn" onclick="checkLocation()" style="display:none">📍 Enable GEO Location +25%</button>
+<button class="btn-main btn-invite" onclick="shareApp()">📤 Invite Friends +10% Bonus</button>
+<div class="stats-grid">
+<div class="stat-box"><small>Ref Bonus</small><br><b id="statRef">0</b></div>
+<div class="stat-box"><small>GEO Status</small><br><b id="statGeo">OFF</b></div>
+</div>
+<div class="leader">
+<div style="display:flex;justify-content:space-between"><b>🏆 Community Miners</b><small id="geoStatus" style="color:green"></small></div>
+<div id="leaderList" style="margin-top:8px;font-size:13px">Loading...</div>
+</div>
+<div class="footer-links">
+<a href="privacy.html">Privacy</a> | <a href="terms.html">TOS</a>
+<br>
+<small id="refInfo" style="display:block;margin-top:6px;color:#333"></small>
+<p id="status" style="margin-top:8px;color:#666"></p>
+</div>
+</div>
+<div class="bottom-nav">
+<div class="nav-item active"><span class="icon">⛏️</span>Mine</div>
+<div class="nav-item" onclick="shareApp()"><span class="icon">👥</span>Team</div>
+<div class="nav-item" onclick="checkLocation()"><span class="icon">🌍</span>GEO</div>
+<div class="nav-item"><span class="icon">👛</span>Wallet</div>
+</div>
 <script>
-const Pi = window.Pi;
-// MAINNET LINK - fivelifegeo5.github.io
-Pi.init({ version: "2.0" });
-
-let username=null, mining=false;
-let balance=parseFloat(localStorage.getItem('5life_main_balance')||'0');
-let sessionStart=parseInt(localStorage.getItem('5life_main_session')||'0');
-let refCount=parseInt(localStorage.getItem('5life_main_ref')||'0');
-let geoEnabled=localStorage.getItem('5life_main_geo')==='1';
+const Pi = window.Pi; Pi.init({ version: "2.0", sandbox: false });
+let username=localStorage.getItem('5life_user')||null, mining=false;
+let balance=parseFloat(localStorage.getItem('5life_balance')||'0');
+let sessionStart=parseInt(localStorage.getItem('5life_session')||'0');
+let lastUpdate=parseInt(localStorage.getItem('5life_last')||'0');
+let refCount=parseInt(localStorage.getItem('5life_ref')||'0');
+let geoEnabled=localStorage.getItem('5life_geo')==='1';
 let interval=null, timerInterval=null;
-
 const urlParams=new URLSearchParams(window.location.search);
 const refBy=urlParams.get('ref');
-if(refBy){
-  document.getElementById('refInfo').innerText=`Invited by @${refBy} - You get +5% bonus!`;
-  localStorage.setItem('5life_main_invited',refBy);
+if(refBy){ document.getElementById('refInfo').innerText=`Invited by @${refBy} - You get +5%`; localStorage.setItem('5life_invited',refBy); }
+function getRate(){ let r=0.10; if(localStorage.getItem('5life_invited')) r+=0.005; r+=refCount*0.01; if(geoEnabled) r*=1.25; return r; }
+function updateUI(){ 
+  document.getElementById('balance').innerText=balance.toFixed(2);
+  document.getElementById('balanceMini').innerText=balance.toFixed(2)+' 5LIFE';
+  document.getElementById('refCount').innerText=refCount;
+  document.getElementById('statRef').innerText=refCount;
+  document.getElementById('geoBonus').innerText=geoEnabled?'+25%':'+0%';
+  document.getElementById('statGeo').innerText=geoEnabled?'ON ✅':'OFF';
+  if(geoEnabled) document.getElementById('geoBonus').style.color='#28a745';
+  document.getElementById('rate').innerText=getRate().toFixed(2);
 }
-
 function updateLeaderboard(){
-  const board=JSON.parse(localStorage.getItem('5life_main_board')||'[]');
-  if(username){
-    const ex=board.find(b=>b.u===username);
-    if(ex) ex.b=balance; else board.push({u:username,b:balance});
-  }
-  board.sort((a,b)=>b.b-a.b);
-  localStorage.setItem('5life_main_board',JSON.stringify(board));
-  document.getElementById('leaderList').innerHTML=board.slice(0,5).map((e,i)=>`${i+1}. @${e.u}: ${e.b.toFixed(2)} 5LIFE`).join('<br>')||'Be the first Mainnet miner!';
+  const board=JSON.parse(localStorage.getItem('5life_board')||'[]');
+  if(username){ const ex=board.find(b=>b.u===username); if(ex) ex.b=balance; else board.push({u:username,b:balance}); }
+  board.sort((a,b)=>b.b-a.b); localStorage.setItem('5life_board',JSON.stringify(board));
+  document.getElementById('leaderList').innerHTML=board.slice(0,5).map((e,i)=>`${i+1}. <b>@${e.u}</b>: ${e.b.toFixed(2)} 5LIFE`).join('<br>')||'Be first!';
 }
-updateLeaderboard();
-
-async function login(){
-  try{
-    const auth=await Pi.authenticate(['username'],()=>{});
-    username=auth.user.username;
-    document.getElementById('userInfo').innerHTML=`Welcome @${username}!<br><small>Mainnet: fivelifegeo5.github.io</small>`;
+function restoreSession(){
+  if(username){
+    document.getElementById('userBadge').innerText='@'+username;
     document.getElementById('connectBtn').style.display='none';
     document.getElementById('mineBtn').style.display='block';
     document.getElementById('geoBtn').style.display='block';
-    document.getElementById('balanceBox').style.display='block';
-    document.getElementById('balance').innerText=balance.toFixed(2);
-    document.getElementById('refCount').innerText=refCount;
-    document.getElementById('status').innerText="✅ Mainnet Connected - fivelifegeo5.github.io";
-    if(geoEnabled) document.getElementById('geoBonus').innerText="+25%";
-    updateLeaderboard();
-    if(sessionStart && Date.now()-sessionStart < 24*3600*1000) toggleMining();
-  }catch(e){ alert("Mainnet Login failed: "+e.message); }
+    document.getElementById('status').innerText='✅ Auto-Connected';
+  }
+  if(sessionStart && Date.now()-sessionStart < 86400000){
+    if(lastUpdate){
+      let elapsed = Math.floor((Date.now() - lastUpdate)/1000);
+      if(elapsed>0 && elapsed < 86400){
+        let earned = elapsed * getRate();
+        balance += earned;
+        localStorage.setItem('5life_balance',balance);
+      }
+    }
+    setTimeout(()=>{ if(!mining) toggleMining(); }, 800);
+  }
+  updateUI(); updateLeaderboard();
 }
-function getRate(){
-  let r=0.10; if(localStorage.getItem('5life_main_invited')) r+=0.005;
-  r+=refCount*0.01; if(geoEnabled) r*=1.25; return r;
+updateUI(); updateLeaderboard(); restoreSession();
+async function login(){
+  try{
+    const auth=await Pi.authenticate(['username','payments'],()=>{});
+    username=auth.user.username;
+    localStorage.setItem('5life_user', username);
+    document.getElementById('userBadge').innerText='@'+username;
+    document.getElementById('connectBtn').style.display='none';
+    document.getElementById('mineBtn').style.display='block';
+    document.getElementById('geoBtn').style.display='block';
+    document.getElementById('status').innerText='✅ Mainnet Wallet Connected';
+    document.getElementById('mineStatus').innerText='READY';
+    updateLeaderboard();
+    if(sessionStart && Date.now()-sessionStart < 86400000) toggleMining();
+  }catch(e){ 
+    document.getElementById('status').innerText='Mainnet auth pending - using guest mode';
+    if(!username){ username='Guest_'+Math.floor(Math.random()*10000); localStorage.setItem('5life_user',username); document.getElementById('userBadge').innerText='@'+username; }
+    document.getElementById('connectBtn').style.display='none'; document.getElementById('mineBtn').style.display='block'; document.getElementById('geoBtn').style.display='block';
+  }
 }
 function toggleMining(){
   if(!mining){
-    if(!sessionStart || Date.now()-sessionStart > 24*3600*1000){
-      sessionStart=Date.now(); localStorage.setItem('5life_main_session',sessionStart);
+    if(!sessionStart || Date.now()-sessionStart > 86400000){
+      sessionStart=Date.now(); localStorage.setItem('5life_session',sessionStart);
     }
-    mining=true;
-    document.getElementById('mineBtn').innerText="⏸️ Stop Mining"; document.getElementById('mineBtn').className="btn btn-red";
+    mining=true; lastUpdate=Date.now();
+    document.getElementById('mineBtn').innerText='⏸️ Stop Mining';
+    document.getElementById('mineBtn').className='btn-main btn-stop';
+    document.getElementById('mineCircle').classList.add('active');
+    document.getElementById('mineStatus').innerText='MINING...';
     document.getElementById('rate').innerText=getRate().toFixed(2);
-    interval=setInterval(()=>{ balance+=getRate(); document.getElementById('balance').innerText=balance.toFixed(2); localStorage.setItem('5life_main_balance',balance); updateLeaderboard(); },1000);
-    timerInterval=setInterval(()=>{
-      const remain=24*3600*1000 - (Date.now()-sessionStart);
-      if(remain<=0){ toggleMining(); document.getElementById('status').innerText="✅ 24h Finished!"; localStorage.setItem('5life_main_session','0'); return; }
-      const h=Math.floor(remain/3600000), m=Math.floor((remain%3600000)/60000), s=Math.floor((remain%60000)/1000);
-      document.getElementById('timer').innerText=`⏰ Session: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} left`;
+    interval=setInterval(()=>{
+      balance+=getRate(); 
+      localStorage.setItem('5life_balance',balance);
+      localStorage.setItem('5life_last', Date.now());
+      updateUI(); updateLeaderboard();
     },1000);
-  }else{ mining=false; clearInterval(interval); clearInterval(timerInterval); document.getElementById('mineBtn').innerText="⛏️ Start Mining"; document.getElementById('mineBtn').className="btn btn-green"; }
+    timerInterval=setInterval(()=>{
+      const remain=86400000 - (Date.now()-sessionStart);
+      if(remain<=0){
+        toggleMining(); document.getElementById('status').innerText='Session Done - Start New!';
+        localStorage.setItem('5life_session','0'); localStorage.setItem('5life_last','0');
+        document.getElementById('timer').innerText='00:00:00'; return;
+      }
+      const h=Math.floor(remain/3600000), m=Math.floor((remain%3600000)/60000), s=Math.floor((remain%60000)/1000);
+      document.getElementById('timer').innerText=`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    },1000);
+  }else{
+    mining=false; clearInterval(interval); clearInterval(timerInterval);
+    localStorage.setItem('5life_last', Date.now());
+    document.getElementById('mineBtn').innerText='▶️ Start Mining';
+    document.getElementById('mineBtn').className='btn-main btn-mine';
+    document.getElementById('mineCircle').classList.remove('active');
+    document.getElementById('mineStatus').innerText='PAUSED';
+  }
 }
-function checkLocation(){
-  if(!navigator.geolocation){ alert("No GPS"); return; }
-  document.getElementById('geoStatus').innerText="📡 Checking...";
-  navigator.geolocation.getCurrentPosition(pos=>{
-    geoEnabled=true; localStorage.setItem('5life_main_geo','1');
-    document.getElementById('geoBonus').innerText="+25%"; document.getElementById('rate').innerText=getRate().toFixed(2);
-    document.getElementById('geoStatus').innerText=`✅ GEO Verified Mainnet! +25% Active`;
-    document.getElementById('geoBtn').style.display='none';
-  },()=>{ document.getElementById('geoStatus').innerText="❌ Enable GPS"; });
-}
-function shareApp(){
-  const refLink=`https://fivelifegeo5.github.io?ref=${username||'geovaniepascual'}`;
-  if(navigator.share){ navigator.share({title:'5LIFE GEO Mainnet', text:`Mine 5LIFE Mainnet with me! ${refLink}`, url:refLink}); }
-  else { navigator.clipboard.writeText(refLink); alert("Mainnet Link copied: "+refLink); refCount++; localStorage.setItem('5life_main_ref',refCount); document.getElementById('refCount').innerText=refCount; }
-}
-function resetData(){ if(confirm("Reset Mainnet data?")){ localStorage.clear(); location.reload(); } }
+function checkLocation(){ if(!navigator.geolocation){ alert('No GPS'); return; } document.getElementById('geoStatus').innerText='Checking...'; navigator.geolocation.getCurrentPosition(()=>{ geoEnabled=true; localStorage.setItem('5life_geo','1'); updateUI(); document.getElementById('geoStatus').innerText='GEO +25% Active!'; document.getElementById('geoBtn').style.display='none'; },()=>{ document.getElementById('geoStatus').innerText='Enable GPS'; }); }
+function shareApp(){ const refLink=`https://fivelifegeo5.github.io?ref=${username||'geovaniepascual'}`; if(navigator.share) navigator.share({title:'5LIFE GEO', text:`Mine with me! ${refLink}`, url:refLink}); else { navigator.clipboard.writeText(refLink); alert('Copied: '+refLink); refCount++; localStorage.setItem('5life_ref',refCount); updateUI(); } }
 </script>
 </body>
-  </html>
+</html>
