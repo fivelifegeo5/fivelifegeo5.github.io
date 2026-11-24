@@ -1,0 +1,148 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5LIFE PAY - MAINNET</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#f8f5ff;padding:16px;padding-bottom:90px}
+.header{background:#6f42c1;color:#fff;padding:14px;border-radius:14px;display:flex;justify-content:space-between;align-items:center}
+.card{background:#fff;border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.btn{width:100%;padding:12px;border:0;border-radius:10px;font-weight:800;margin:6px 0;cursor:pointer}
+.btn-main{background:#6f42c1;color:#fff}.btn-pay{background:#25D366;color:#fff}.btn-dark{background:#222;color:#fff}.btn-back{background:#eee}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;margin:6px 0}
+.small{font-size:12px;color:#666;word-break:break-all}
+#reader{width:100%;border-radius:12px;overflow:hidden;margin-top:8px}
+</style>
+</head><body>
+<div class="header"><b>👛 5LIFE PAY</b><span id="u" style="font-size:12px"></span></div>
+
+<div class="card">
+<div style="font-size:12px;opacity:.7">PAY WALLET BALANCE - Zero Fee</div>
+<div style="font-size:32px;font-weight:900;color:#6f42c1"><span id="bal">0.00</span> 5LIFE</div>
+<div class="small">Username = Wallet Address</div>
+</div>
+
+<div class="card" style="text-align:center">
+<b>📥 My Receive QR</b>
+<p class="small">Pi Username mo = Receiver mo sa PAY</p>
+<div style="display:flex;gap:8px;margin:10px 0">
+<button class="btn btn-main" style="flex:1" onclick="genQR('pay')">PAY QR</button>
+<button class="btn btn-pay" style="flex:1" onclick="genQR('pi')">Pi G... QR</button>
+</div>
+<div id="qrBox" style="display:flex;justify-content:center;padding:12px;background:#fff;border-radius:12px;border:1px dashed #ccc;min-height:140px;align-items:center">
+<span class="small">Pindutin PAY QR para sa Zero Fee receiver</span>
+</div>
+<div id="qrInfo" class="small" style="margin-top:8px"></div>
+</div>
+
+<div class="card">
+<b>🔥 PAY to PAY - Zero Fee via QR Scan</b><br><small class="small">Scan QR ng tropa, auto-fill username</small>
+<input id="toUser" placeholder="Pi Username - auto fill pag nag scan">
+<input id="toAmt" type="number" placeholder="Amount">
+<button class="btn btn-dark" onclick="startScan()">📷 Scan QR to Send</button>
+<button class="btn btn-pay" onclick="payToPay()">⚡ Send Zero Fee</button>
+<div id="reader"></div>
+<p id="p2pMsg" class="small" style="margin-top:8px;color:green"></p>
+</div>
+
+<div class="card">
+<b>📤 Withdraw to Real Pi Wallet</b>
+<input id="piAddr" placeholder="Your Pi Mainnet G...">
+<input id="wAmt" type="number" placeholder="Amount to withdraw">
+<button class="btn btn-main" onclick="requestWithdraw()">📤 Request Withdraw</button>
+<div id="hist" style="font-size:12px;margin-top:10px"></div>
+</div>
+
+<a href="index.html"><button class="btn btn-back">⬅️ Back to Mining</button></a>
+
+<script>
+Pi.init({version:"2.0", sandbox:false});
+let username = localStorage.getItem('5life_user') || 'guest';
+let balKey = 'pay_main_' + username;
+let balance = parseFloat(localStorage.getItem(balKey) || localStorage.getItem('pay_main') || '0');
+let html5QrCode;
+
+function update(){
+  document.getElementById('u').innerText = '@'+username;
+  document.getElementById('bal').innerText = balance.toFixed(2);
+  let h = JSON.parse(localStorage.getItem('pay_hist_main')||'[]');
+  document.getElementById('hist').innerHTML = h.slice(0,10).map(x=>'<div>• '+x+'</div>').join('') || '<span class="small">No transactions yet</span>';
+}
+update();
+
+async function ensureUser(){
+  if(username==='guest'){
+    try{
+      const auth = await Pi.authenticate(['username'],()=>{});
+      username = auth.user.username;
+      localStorage.setItem('5life_user', username);
+      balKey = 'pay_main_' + username;
+      balance = parseFloat(localStorage.getItem(balKey)||'0');
+      update();
+    }catch(e){ alert('Connect Pi muna'); throw e; }
+  }
+}
+
+function genQR(type){
+  let box = document.getElementById('qrBox');
+  let info = document.getElementById('qrInfo');
+  box.innerHTML = '';
+  if(type==='pay'){
+    let data = '5LIFE-PAY:' + username;
+    new QRCode(box, {text: data, width:180, height:180});
+    info.innerHTML = `<b>Receiver:</b> @${username}<br>Data: ${data}<br><small>Scan nito = PAY to PAY Zero Fee sa iyo</small>`;
+  }else{
+    let addr = document.getElementById('piAddr').value.trim() || 'G...';
+    new QRCode(box, {text: addr, width:180, height:180});
+    info.innerHTML = `<b>Pi Mainnet G...</b><br>${addr}<br><small>Asset: 5LIFE<br>Issuer: GD3OIJ...</small>`;
+  }
+}
+
+function startScan(){
+  let readerDiv = document.getElementById('reader');
+  if(html5QrCode && html5QrCode.isScanning){ html5QrCode.stop(); readerDiv.innerHTML=''; return; }
+  html5QrCode = new Html5Qrcode("reader");
+  html5QrCode.start({facingMode:"environment"}, {fps:10, qrbox:250},
+  (decoded)=>{
+    let val = decoded;
+    if(val.includes('5LIFE-PAY:')) val = val.split('5LIFE-PAY:')[1];
+    val = val.replace('@','').trim();
+    document.getElementById('toUser').value = val;
+    document.getElementById('p2pMsg').innerText = '✅ Na-scan si @'+val+' - lagay ka na ng amount';
+    html5QrCode.stop();
+    readerDiv.innerHTML='';
+  }, ()=>{});
+}
+
+async function payToPay(){
+  await ensureUser();
+  let to = document.getElementById('toUser').value.trim().replace('@','').replace('5LIFE-PAY:','');
+  let amt = parseFloat(document.getElementById('toAmt').value);
+  if(!to || !amt || amt<=0) return alert('Lagay username at amount');
+  if(amt > balance) return alert('Kulang balance');
+  balance -= amt; localStorage.setItem(balKey, balance);
+  let toKey = 'pay_main_' + to;
+  let toBal = parseFloat(localStorage.getItem(toKey)||'0') + amt;
+  localStorage.setItem(toKey, toBal);
+  let h = JSON.parse(localStorage.getItem('pay_hist_main')||'[]');
+  h.unshift(new Date().toLocaleString()+': Sent '+amt.toFixed(2)+' to @'+to+' (Zero Fee via QR)');
+  localStorage.setItem('pay_hist_main', JSON.stringify(h));
+  document.getElementById('p2pMsg').innerText = '✅ Sent '+amt+' 5LIFE to @'+to+' - Zero Fee!';
+  update();
+}
+
+function requestWithdraw(){
+  let addr = document.getElementById('piAddr').value.trim();
+  let amt = parseFloat(document.getElementById('wAmt').value);
+  if(!addr.startsWith('G')) return alert('G... dapat');
+  if(amt > balance) return alert('Kulang');
+  let h = JSON.parse(localStorage.getItem('pay_hist_main')||'[]');
+  h.unshift(new Date().toLocaleString()+': Withdraw request '+amt.toFixed(2)+' to '+addr.slice(0,8));
+  localStorage.setItem('pay_hist_main', JSON.stringify(h));
+  alert('Withdraw request logged - i-process sa issuer wallet');
+  update();
+}
+</script>
+</body></html>
