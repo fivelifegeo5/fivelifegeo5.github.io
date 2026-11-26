@@ -1,116 +1,157 @@
-<!DOCTYPE html><html><head> 
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"> 
-<title>5LIFE GEO - MAINNET</title> 
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>5LIFE GEO - MAINNET</title>
 <link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#d4a017">
-<meta property="og:image" content="logo.png">
-<script src="https://sdk.minepi.com/pi-sdk.js"></script> 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script> 
-<style> 
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto} 
-body{background:#fffbeb;height:100vh;display:flex;flex-direction:column;overflow:hidden} 
-.header{background:linear-gradient(90deg,#0d7a3a,#d4a017);color:white;padding:10px 14px;display:flex;justify-content:space-between;align-items:center} 
-.header-left{display:flex;align-items:center;gap:8px}
-.header-left img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.badge-main{background:#fff;color:#0d7a3a;font-size:10px;padding:4px 10px;border-radius:10px;font-weight:900} 
-.content{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px} 
-.balance-card{background:linear-gradient(135deg,#0d7a3a,#d4a017);color:white;border-radius:20px;padding:20px;text-align:center;position:relative}
-.logo-big{width:90px;height:90px;border-radius:50%;margin:0 auto 10px;display:block;background:#fff;padding:3px;box-shadow:0 6px 16px rgba(0,0,0,.25);border:3px solid rgba(255,255,255,.8)}
-.mine-circle{width:180px;height:180px;border-radius:50%;margin:25px auto;background:conic-gradient(from 0deg,#0d7a3a,#d4a017,#0d7a3a);display:flex;align-items:center;justify-content:center;animation:spin 3s linear infinite paused;box-shadow:0 0 20px rgba(212,160,23,.3)} 
-.mine-circle.active{animation-play-state:running} 
-.mine-circle .inner{width:160px;height:160px;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center} 
-@keyframes spin{to{transform:rotate(360deg)}} 
-.timer-card{background:white;border-radius:14px;padding:12px;margin:14px 0;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.05)} 
-.btn-main{width:100%;padding:15px;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;margin:6px 0} 
-.btn-mine{background:#0d7a3a;color:white}.btn-stop{background:#dc3545;color:white}.btn-geo{background:#d4a017;color:#000}.btn-pay{background:#222;color:white} 
-.stat-box{background:white;border-radius:12px;padding:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04)}.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0} 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 14px;border-top:1px solid #eee} 
-.nav-item{text-align:center;font-size:11px;color:#999;cursor:pointer;flex:1}.nav-item.active{color:#0d7a3a;font-weight:700}.nav-item .icon{font-size:22px;display:block} 
-.pay-card{background:white;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)} 
-.input{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:8px} 
-.badge{background:#fff3cd;padding:8px;border-radius:8px;margin-top:8px;font-size:12px;word-break:break-all;border:1px solid #d4a017} 
-</style> 
-</head><body> 
-<div class="header"><div class="header-left"><img src="logo.png"><h1>5LIFE GEO</h1></div><div><span class="badge-main">MAINNET</span> <span id="userBadge" style="font-size:12px;margin-left:6px;font-weight:700"></span></div></div> 
-<div class="content"> 
-<div id="tab-mine"> 
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui} 
+body{background:#fffbeb;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.header{background:linear-gradient(90deg,#0d7a3a,#d4a017);color:white;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.content{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px}
+.notice{background:#fff3cd;border:1px solid #d4a017;padding:10px;border-radius:10px;font-size:12px;margin-bottom:12px}
+.balance-card{background:linear-gradient(135deg,#0d7a3a,#d4a017);color:white;border-radius:20px;padding:20px;text-align:center}
+.logo-big{width:90px;height:90px;border-radius:50%;margin:0 auto 10px;display:block;background:#fff;padding:3px}
+.mine-circle{width:180px;height:180px;border-radius:50%;margin:25px auto;background:conic-gradient(from 0deg,#0d7a3a,#d4a017,#0d7a3a);display:flex;align-items:center;justify-content:center;animation:spin 3s linear infinite paused}
+.mine-circle.active{animation-play-state:running}
+.mine-circle .inner{width:160px;height:160px;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.timer-card{background:white;border-radius:14px;padding:12px;margin:14px 0;display:flex;justify-content:space-between;align-items:center}
+.btn-main{width:100%;padding:15px;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;margin:6px 0}
+.btn-mine{background:#0d7a3a;color:white}.btn-stop{background:#dc3545;color:white}.btn-geo{background:#d4a017;color:#000}.btn-pay{background:#222;color:white}
+.pay-card{background:white;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.input{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:8px}
+.badge{background:#fff3cd;padding:8px;border-radius:8px;margin-top:8px;font-size:12px;word-break:break-all;border:1px solid #d4a017}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 14px;border-top:1px solid #eee}
+.nav-item{text-align:center;font-size:11px;color:#999;flex:1}.nav-item.active{color:#0d7a3a;font-weight:700}.nav-item .icon{font-size:22px;display:block}
+</style>
+</head><body>
+<div class="header"><div style="display:flex;align-items:center;gap:8px"><img src="logo.png" style="width:36px;height:36px;border-radius:50%;background:#fff;padding:2px"><h1>5LIFE GEO</h1></div><div><span style="background:#fff;color:#0d7a3a;font-size:10px;padding:4px 10px;border-radius:10px;font-weight:900">MAINNET</span> <span id="userBadge" style="font-size:12px;font-weight:700"></span></div></div>
+
+<div class="content">
+<div class="notice">
+⚠️ <b>Notice:</b> When you enter, you will see "Third-party app" and "Share information" popups - This is NORMAL for all Pi apps. It comes from Pi Browser, not from us. We will never ask for your wallet passphrase.
+</div>
+
+<div id="tab-mine">
 <div class="balance-card">
 <img src="logo.png" class="logo-big">
-<div style="font-size:12px;opacity:.9">TOTAL 5LIFE MINED - MAINNET</div><div style="font-size:38px;font-weight:900;margin:6px 0">⛏️ <span id="balance">0.00</span></div><div style="font-size:12px;display:flex;gap:12px;justify-content:center"><span>⚡ <b id="rate">0.10</b>/s</span><span>🌍 <b id="geoBonus">+0%</b></span></div></div> 
-<div class="mine-circle" id="mineCircle"><div class="inner"><div style="font-size:40px">⛏️</div><div id="mineStatus" style="font-size:12px;font-weight:700">NOT MINING</div><div id="balanceMini" style="font-size:14px;color:#0d7a3a;font-weight:800">0.00</div></div></div> 
-<div class="timer-card"><div><b>⏰ Session</b><br><small>24h reset</small></div><div id="timer" style="font-family:monospace;font-weight:800;font-size:18px">24:00:00</div></div> 
-<button class="btn-main btn-pay" id="connectBtn" onclick="login()" style="background:#0d7a3a;color:white">🔗 Connect Pi Mainnet</button> 
-<button class="btn-main btn-mine" id="mineBtn" onclick="toggleMining()" style="display:none">▶️ Start Mining</button> 
-<button class="btn-main btn-geo" id="geoBtn" onclick="checkLocation()" style="display:none">📍 Enable GEO +25%</button> 
-<div class="stats-grid"><div class="stat-box"><small>GEO</small><br><b id="statGeo">OFF</b></div><div class="stat-box"><small>PAY Wallet</small><br><b id="payBal">0</b></div></div> 
-<button class="btn-main btn-pay" onclick="location.href='pay.html'">👛 Open 5LIFE PAY - Zero Fee</button> 
-<div class="pay-card"><b>🏆 Top Miners</b><div id="leaderList" style="margin-top:8px;font-size:13px"></div></div> 
-</div> 
-<div id="tab-wallet" style="display:none"> 
-<div class="pay-card"> 
-<b><img src="logo.png" style="width:20px;border-radius:50%;vertical-align:middle"> 5LIFE PAY - MAINNET</b> 
-<div class="badge"><img src="logo.png" style="width:14px;border-radius:50%;vertical-align:middle"> Issuer: GD3OIJAV...2BS ✅</div> 
-<div class="badge">Rate: 1 Pi = 555 5LIFE</div> 
-<div class="badge">Pi Wallet (on-chain, may fee): <b id="piWalletBal">0</b></div> 
-<div class="badge">Pay Wallet (zero fee): <b id="payWalletBal">0 5LIFE</b></div> 
-<button class="btn-main btn-pay" onclick="showTrustlineInfo()">1. Add Trustline Info</button> 
-<button class="btn-main" style="background:#000;color:#fff" onclick="topUpDirect()">2. Top-up 1 Pi = 555 5LIFE</button> 
-<button class="btn-main" style="background:#0d7a3a;color:#fff" onclick="claimMining()">3. Claim Mining -> PAY (zero fee)</button> 
-<hr style="margin:12px 0"> 
-<h4>Send (PAY to PAY = Zero Fee)</h4> 
-<input id="sendTo" class="input" placeholder="@username - scan QR"> 
-<input id="amount" class="input" type="number" placeholder="Amount"> 
-<button class="btn-main" onclick="startScan()">📷 Scan PAY QR</button> 
-<div id="qr-reader"></div> 
-<button class="btn-main" style="background:#d4a017;color:#000" onclick="sendPay()">Send Zero Fee</button> 
-<p style="font-size:11px;color:#666;margin-top:8px">PAY to PAY = Username lang, zero fee. On-chain withdraw lang may fee.</p> 
-</div> 
-</div> 
-<p id="status" style="text-align:center;font-size:12px;color:#666;margin-top:8px"></p> 
-</div> 
-<div class="bottom-nav"> 
-<div class="nav-item active" id="nav-mine" onclick="showTab('mine')"><span class="icon">⛏️</span>Mine</div> 
-<div class="nav-item" onclick="checkLocation()"><span class="icon">🌍</span>GEO</div> 
-<div class="nav-item" id="nav-wallet" onclick="showTab('wallet')"><span class="icon">👛</span>Wallet</div> 
-</div> 
-<script> 
-const ISSUER="GD3OIJAV677OHQDZ25QXVDMWAD3AKJ6CGBMXKXZLGTBVUFC4TN2EX2BS"; 
-const ASSET="5LIFE"; 
-const RATE=555; 
-Pi.init({version:"2.0",sandbox:false}); 
-let username=localStorage.getItem('5life_user_main')||null; 
-let balance=parseFloat(localStorage.getItem('5life_balance_main')||'0'); 
-let sessionStart=parseInt(localStorage.getItem('5life_session_main')||'0'); 
-let lastUpdate=parseInt(localStorage.getItem('5life_last_main')||'0'); 
-let geoEnabled=localStorage.getItem('5life_geo_main')==='1'; 
-let mining=false, interval=null, timerInterval=null, html5QrCode=null; 
-function getPayKey(){ return 'pay_main_' + (username||'guest'); } 
-function getPayBal(){ return parseFloat(localStorage.getItem(getPayKey())||'0'); } 
-function setPayBal(v){ localStorage.setItem(getPayKey(), v); } 
-function getRate(){return geoEnabled?0.125:0.10;} 
-function updateUI(){ 
-document.getElementById('balance').innerText=balance.toFixed(2); 
-document.getElementById('balanceMini').innerText=balance.toFixed(2); 
-document.getElementById('statGeo').innerText=geoEnabled?'ON ✅':'OFF'; 
-document.getElementById('geoBonus').innerText=geoEnabled?'+25%':'+0%'; 
-document.getElementById('rate').innerText=getRate().toFixed(2); 
-let pb=getPayBal(); 
-document.getElementById('payBal').innerText=pb.toFixed(2); 
-document.getElementById('payWalletBal').innerText=pb.toFixed(2)+' 5LIFE'; 
-localStorage.setItem('5life_balance_main',balance); 
-} 
-function showTab(t){document.getElementById('tab-mine').style.display=t==='mine'?'block':'none'; document.getElementById('tab-wallet').style.display=t==='wallet'?'block':'none'; document.getElementById('nav-mine').classList.toggle('active',t==='mine'); document.getElementById('nav-wallet').classList.toggle('active',t==='wallet');} 
-function updateLeaderboard(){const board=JSON.parse(localStorage.getItem('5life_board_main')||'[]'); if(username){const ex=board.find(b=>b.u===username); if(ex) ex.b=balance; else board.push({u:username,b:balance});} board.sort((a,b)=>b.b-a.b); localStorage.setItem('5life_board_main',JSON.stringify(board)); document.getElementById('leaderList').innerHTML=board.slice(0,5).map((e,i)=>`${i+1}. <b>@${e.u}</b>: ${e.b.toFixed(2)}`).join('<br>')||'Be first!';} 
-function restore(){if(username){document.getElementById('userBadge').innerText='@'+username; document.getElementById('connectBtn').style.display='none'; document.getElementById('mineBtn').style.display='block'; document.getElementById('geoBtn').style.display='block';} if(sessionStart && Date.now()-sessionStart < 86400000){let elapsed=Math.floor((Date.now()-lastUpdate)/1000); if(elapsed>0){balance+=elapsed*getRate();} setTimeout(()=>{if(!mining) toggleMining();},800);} updateUI(); updateLeaderboard();} 
-restore(); 
-async function login(){try{const auth=await Pi.authenticate(['username','payments'],()=>{}); username=auth.user.username; localStorage.setItem('5life_user_main',username); localStorage.setItem('5life_user',username); document.getElementById('userBadge').innerText='@'+username; document.getElementById('connectBtn').style.display='none'; document.getElementById('mineBtn').style.display='block'; document.getElementById('geoBtn').style.display='block'; updateUI(); updateLeaderboard();}catch(e){if(!username){username='Guest_'+Math.floor(Math.random()*10000); localStorage.setItem('5life_user_main',username);} document.getElementById('userBadge').innerText='@'+username; document.getElementById('connectBtn').style.display='none'; document.getElementById('mineBtn').style.display='block'; document.getElementById('geoBtn').style.display='block';}} 
-function toggleMining(){if(!mining){if(!sessionStart || Date.now()-sessionStart>86400000){sessionStart=Date.now(); localStorage.setItem('5life_session_main',sessionStart);} mining=true; lastUpdate=Date.now(); document.getElementById('mineBtn').innerText='⏸️ Stop'; document.getElementById('mineBtn').className='btn-main btn-stop'; document.getElementById('mineCircle').classList.add('active'); document.getElementById('mineStatus').innerText='MINING...'; interval=setInterval(()=>{balance+=getRate(); localStorage.setItem('5life_last_main',Date.now()); updateUI(); updateLeaderboard();},1000); timerInterval=setInterval(()=>{const remain=86400000-(Date.now()-sessionStart); if(remain<=0){toggleMining(); document.getElementById('timer').innerText='00:00:00'; return;} const h=Math.floor(remain/3600000),m=Math.floor((remain%3600000)/60000),s=Math.floor((remain%60000)/1000); document.getElementById('timer').innerText=`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;},1000);}else{mining=false; clearInterval(interval); clearInterval(timerInterval); localStorage.setItem('5life_last_main',Date.now()); document.getElementById('mineBtn').innerText='▶️ Start Mining'; document.getElementById('mineBtn').className='btn-main btn-mine'; document.getElementById('mineCircle').classList.remove('active'); document.getElementById('mineStatus').innerText='PAUSED';}} 
-function checkLocation(){if(!navigator.geolocation){alert('No GPS');return;} navigator.geolocation.getCurrentPosition(()=>{geoEnabled=true; localStorage.setItem('5life_geo_main','1'); updateUI();},()=>{alert('Enable GPS');});} 
-function showTrustlineInfo(){alert(`Add Trustline manually sa Pi Wallet:\n\n1. Open Pi Browser -> Wallet\n2. Add Asset -> Custom\n3. Code: ${ASSET}\n4. Issuer: ${ISSUER}\n\nTapos ka na, makaka-receive ka na ng real 5LIFE on-chain.`);} 
-async function topUpDirect(){if(!username) return alert("Connect Pi muna"); try{await Pi.createPayment({amount:1,memo:`Top-up ${RATE} 5LIFE`,metadata:{rate:RATE}},{onReadyForServerApproval:id=>{}, onReadyForServerCompletion:(id,txid)=>{let pb=getPayBal()+RATE; setPayBal(pb); updateUI(); alert(`✅ +${RATE} 5LIFE sa PAY Wallet mo @${username} - Zero Fee!`);}});}catch(e){alert("Top-up cancel or Pi payments in review");}} 
-function claimMining(){if(balance<=0) return alert("Wala pang mine"); let pb=getPayBal()+balance; setPayBal(pb); alert(`✅ Claimed ${balance.toFixed(2)} 5LIFE to @${username} PAY (zero fee)`); balance=0; updateUI();} 
-function startScan(){const div=document.getElementById('qr-reader'); if(html5QrCode && html5QrCode.isScanning){html5QrCode.stop(); div.innerHTML=''; return;} html5QrCode=new Html5Qrcode("qr-reader"); html5QrCode.start({facingMode:"environment"},{fps:10,qrbox:250},(txt)=>{let v=txt; if(v.includes('5LIFE-PAY:')) v=v.split('5LIFE-PAY:')[1]; v=v.replace('@','').trim(); document.getElementById('sendTo').value=v; html5QrCode.stop(); div.innerHTML='';},()=>{});} 
-function sendPay(){let to=document.getElementById('sendTo').value.trim().replace('@','').replace('5LIFE-PAY:',''); let amt=parseFloat(document.getElementById('amount').value); if(!to||!amt) return alert("Lagyan @username at amount"); let pb=getPayBal(); if(amt>pb) return alert("Kulang PAY balance"); setPayBal(pb-amt); let toKey='pay_main_'+to; let toBal=parseFloat(localStorage.getItem(toKey)||'0')+amt; localStorage.setItem(toKey,toBal); updateUI(); alert(`✅ Sent ${amt} 5LIFE kay @${to} - ZERO FEE!`);} 
+<div style="font-size:12px;opacity:.9">TOTAL 5LIFE MINED - MAINNET</div>
+<div style="font-size:38px;font-weight:900">⛏️ <span id="balance">0.00</span></div>
+<div style="font-size:12px;display:flex;gap:12px;justify-content:center"><span>⚡ <b id="rate">0.10</b>/s</span><span>🌍 <b id="geoBonus">+0%</b></span></div>
+</div>
+
+<div class="mine-circle" id="mineCircle"><div class="inner"><div style="font-size:40px">⛏️</div><div id="mineStatus" style="font-size:12px;font-weight:700">NOT MINING</div><div id="balanceMini" style="font-size:14px;color:#0d7a3a;font-weight:800">0.00</div></div></div>
+
+<div class="timer-card"><div><b>⏰ Session</b><br><small>24h reset</small></div><div id="timer" style="font-family:monospace;font-weight:800;font-size:18px">24:00:00</div></div>
+
+<button class="btn-main btn-pay" id="connectBtn" onclick="login()" style="background:#0d7a3a;color:white">🔗 Connect Pi Mainnet</button>
+<button class="btn-main btn-mine" id="mineBtn" onclick="toggleMining()" style="display:none">▶️ Start Mining</button>
+<button class="btn-main btn-geo" id="geoBtn" onclick="checkLocation()" style="display:none">📍 Enable GEO +25%</button>
+
+<button class="btn-main btn-pay" onclick="showTab('wallet')">👛 Open 5LIFE PAY - Zero Fee</button>
+<div class="pay-card"><b>🏆 Top Miners</b><div id="leaderList" style="margin-top:8px;font-size:13px"></div></div>
+</div>
+
+<div id="tab-wallet" style="display:none">
+<div class="pay-card">
+<b>5LIFE PAY - MAINNET</b>
+<div class="badge">Issuer: GD3OIJAV...2BS ✅</div>
+<div class="badge">Rate: 1 Pi = 555 5LIFE</div>
+<div class="badge">Pay Wallet (off-chain, zero fee): <b id="payWalletBal">0</b></div>
+
+<button class="btn-main" style="background:#000;color:#fff" onclick="topUpDirect()">2. Top-up 1 Pi = 555 5LIFE (Real Pi Payment)</button>
+<button class="btn-main" style="background:#0d7a3a;color:#fff" onclick="claimMining()">3. Claim Mining -> PAY</button>
+<hr style="margin:12px 0">
+<input id="sendTo" class="input" placeholder="@username"><input id="amount" class="input" type="number" placeholder="Amount">
+<button class="btn-main" onclick="startScan()">📷 Scan PAY QR</button><div id="qr-reader"></div>
+<button class="btn-main" style="background:#d4a017;color:#000" onclick="sendPay()">Send Zero Fee</button>
+</div>
+</div>
+<p id="status" style="text-align:center;font-size:12px;color:#666"></p>
+</div>
+
+<div class="bottom-nav">
+<div class="nav-item active" id="nav-mine" onclick="showTab('mine')"><span class="icon">⛏️</span>Mine</div>
+<div class="nav-item" onclick="checkLocation()"><span class="icon">🌍</span>GEO</div>
+<div class="nav-item" id="nav-wallet" onclick="showTab('wallet')"><span class="icon">👛</span>Wallet</div>
+</div>
+
+<script>
+const ISSUER="GD3OIJAV677OHQDZ25QXVDMWAD3AKJ6CGBMXKXZLGTBVUFC4TN2EX2BS";
+const RATE=555;
+Pi.init({version:"2.0",sandbox:false});
+
+let username=localStorage.getItem('5life_user_main')||null;
+let balance=parseFloat(localStorage.getItem('5life_balance_main')||'0');
+let sessionStart=parseInt(localStorage.getItem('5life_session_main')||'0');
+let lastUpdate=parseInt(localStorage.getItem('5life_last_main')||'0');
+let geoEnabled=localStorage.getItem('5life_geo_main')==='1';
+let mining=false,interval=null,timerInterval=null,html5QrCode=null;
+
+function getPayKey(){return 'pay_main_'+(username||'guest');}
+function getPayBal(){return parseFloat(localStorage.getItem(getPayKey())||'0');}
+function setPayBal(v){localStorage.setItem(getPayKey(),v);}
+function getRate(){return geoEnabled?0.125:0.10;}
+function updateUI(){
+ document.getElementById('balance').innerText=balance.toFixed(2);
+ document.getElementById('balanceMini').innerText=balance.toFixed(2);
+ document.getElementById('geoBonus').innerText=geoEnabled?'+25%':'+0%';
+ document.getElementById('rate').innerText=getRate().toFixed(2);
+ document.getElementById('payWalletBal').innerText=getPayBal().toFixed(2)+' 5LIFE';
+ localStorage.setItem('5life_balance_main',balance);
+}
+function showTab(t){document.getElementById('tab-mine').style.display=t==='mine'?'block':'none';document.getElementById('tab-wallet').style.display=t==='wallet'?'block':'none';document.getElementById('nav-mine').classList.toggle('active',t==='mine');document.getElementById('nav-wallet').classList.toggle('active',t==='wallet');}
+function updateLeaderboard(){const board=JSON.parse(localStorage.getItem('5life_board_main')||'[]');if(username){const ex=board.find(b=>b.u===username);if(ex)ex.b=balance;else board.push({u:username,b:balance});}board.sort((a,b)=>b.b-a.b);localStorage.setItem('5life_board_main',JSON.stringify(board));document.getElementById('leaderList').innerHTML=board.slice(0,5).map((e,i)=>`${i+1}. <b>@${e.u}</b>: ${e.b.toFixed(2)}`).join('<br>')||'Be first!';}
+function restore(){if(username){document.getElementById('userBadge').innerText='@'+username;document.getElementById('connectBtn').style.display='none';document.getElementById('mineBtn').style.display='block';document.getElementById('geoBtn').style.display='block';}if(sessionStart && Date.now()-sessionStart<86400000){let el=Math.floor((Date.now()-lastUpdate)/1000);if(el>0)balance+=el*getRate();setTimeout(()=>{if(!mining)toggleMining();},800);}updateUI();updateLeaderboard();}restore();
+
+async function login(){
+ try{
+  const auth=await Pi.authenticate(['username','payments'],()=>{});
+  username=auth.user.username;
+  localStorage.setItem('5life_user_main',username);
+  document.getElementById('userBadge').innerText='@'+username;
+  document.getElementById('connectBtn').style.display='none';
+  document.getElementById('mineBtn').style.display='block';
+  document.getElementById('geoBtn').style.display='block';
+  updateUI();updateLeaderboard();
+ }catch(e){alert("Connect failed: "+e.message);}
+}
+
+function toggleMining(){
+ if(!mining){
+  if(!sessionStart || Date.now()-sessionStart>86400000){sessionStart=Date.now();localStorage.setItem('5life_session_main',sessionStart);}
+  mining=true;lastUpdate=Date.now();
+  document.getElementById('mineBtn').innerText='⏸️ Stop';document.getElementById('mineBtn').className='btn-main btn-stop';
+  document.getElementById('mineCircle').classList.add('active');document.getElementById('mineStatus').innerText='MINING...';
+  interval=setInterval(()=>{balance+=getRate();localStorage.setItem('5life_last_main',Date.now());updateUI();updateLeaderboard();},1000);
+  timerInterval=setInterval(()=>{const rem=86400000-(Date.now()-sessionStart);if(rem<=0){toggleMining();document.getElementById('timer').innerText='00:00:00';return;}const h=Math.floor(rem/3600000),m=Math.floor((rem%3600000)/60000),s=Math.floor((rem%60000)/1000);document.getElementById('timer').innerText=`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;},1000);
+ }else{mining=false;clearInterval(interval);clearInterval(timerInterval);localStorage.setItem('5life_last_main',Date.now());document.getElementById('mineBtn').innerText='▶️ Start Mining';document.getElementById('mineBtn').className='btn-main btn-mine';document.getElementById('mineCircle').classList.remove('active');document.getElementById('mineStatus').innerText='PAUSED';}
+}
+function checkLocation(){navigator.geolocation.getCurrentPosition(()=>{geoEnabled=true;localStorage.setItem('5life_geo_main','1');updateUI();},()=>{alert('Enable GPS');});}
+
+async function topUpDirect(){
+ if(!username) return alert("Connect Pi first");
+ try{
+  await Pi.createPayment({amount:1,memo:`Top-up ${RATE} 5LIFE for @${username}`,metadata:{rate:RATE, user:username}},{
+   onReadyForServerApproval: async (paymentId)=>{
+    console.log("Approving ", paymentId);
+    try{
+      await fetch('https://fivelifegeo.github.io/api/approve', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({paymentId})});
+    }catch(e){console.log("No backend yet, continue for test"); }
+   },
+   onReadyForServerCompletion: async (paymentId, txid)=>{
+    console.log("Complete ", paymentId, txid);
+    let pb=getPayBal()+RATE; setPayBal(pb); updateUI();
+    alert(`+${RATE} 5LIFE added to @${username} PAY Wallet! TX: ${txid}`);
+   },
+   onCancel: ()=>{alert("Payment cancelled");},
+   onError: (e)=>{alert("Payment error: "+e.message);}
+  });
+ }catch(e){alert("Top-up error: "+e.message);}
+}
+
+function claimMining(){if(balance<=0) return alert("No mined balance"); let pb=getPayBal()+balance; setPayBal(pb); alert(`Claimed ${balance.toFixed(2)} 5LIFE`); balance=0; updateUI();}
+function startScan(){const div=document.getElementById('qr-reader'); if(html5QrCode && html5QrCode.isScanning){html5QrCode.stop(); div.innerHTML=''; return;} html5QrCode=new Html5Qrcode("qr-reader"); html5QrCode.start({facingMode:"environment"},{fps:10,qrbox:250},(txt)=>{let v=txt; if(v.includes('5LIFE-PAY:')) v=v.split('5LIFE-PAY:')[1]; v=v.replace('@','').trim(); document.getElementById('sendTo').value=v; html5QrCode.stop(); div.innerHTML='';},()=>{});}
+function sendPay(){let to=document.getElementById('sendTo').value.trim().replace('@','').replace('5LIFE-PAY:',''); let amt=parseFloat(document.getElementById('amount').value); if(!to||!amt) return alert("Enter @username and amount"); let pb=getPayBal(); if(amt>pb) return alert("Insufficient PAY balance"); setPayBal(pb-amt); let toKey='pay_main_'+to; let toBal=parseFloat(localStorage.getItem(toKey)||'0')+amt; localStorage.setItem(toKey,toBal); updateUI(); alert(`Sent ${amt} 5LIFE to @${to}`);}
 </script></body></html>
