@@ -5,7 +5,7 @@
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui} 
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
 body{background:#fffbeb;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 .header{background:linear-gradient(90deg,#0d7a3a,#d4a017);color:white;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
 .content{flex:1;overflow-y:auto;padding:16px;padding-bottom:90px}
@@ -17,9 +17,9 @@ body{background:#fffbeb;height:100vh;display:flex;flex-direction:column;overflow
 .mine-circle .inner{width:160px;height:160px;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
 @keyframes spin{to{transform:rotate(360deg)}}
 .timer-card{background:white;border-radius:14px;padding:12px;margin:14px 0;display:flex;justify-content:space-between;align-items:center}
-.btn-main{width:100%;padding:15px;border:none;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;margin:6px 0}
+.btn-main{width:100%;padding:15px;border:none;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;margin:6px 0}
 .btn-mine{background:#0d7a3a;color:white}.btn-stop{background:#dc3545;color:white}.btn-geo{background:#d4a017;color:#000}.btn-pay{background:#222;color:white}
-.pay-card{background:white;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pay-card{background:white;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .input{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;margin-top:8px}
 .badge{background:#fff3cd;padding:8px;border-radius:8px;margin-top:8px;font-size:12px;word-break:break-all;border:1px solid #d4a017}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:8px 0 14px;border-top:1px solid #eee}
@@ -29,27 +29,16 @@ body{background:#fffbeb;height:100vh;display:flex;flex-direction:column;overflow
 <div class="header"><div style="display:flex;align-items:center;gap:8px"><img src="logo.png" style="width:36px;height:36px;border-radius:50%;background:#fff;padding:2px"><h1>5LIFE GEO</h1></div><div><span style="background:#fff;color:#0d7a3a;font-size:10px;padding:4px 10px;border-radius:10px;font-weight:900">MAINNET</span> <span id="userBadge" style="font-size:12px;font-weight:700"></span></div></div>
 
 <div class="content">
-<div class="notice">
-⚠️ <b>Notice:</b> When you enter, you will see "Third-party app" and "Share information" popups - This is NORMAL for all Pi apps. It comes from Pi Browser, not from us. We will never ask for your wallet passphrase.
-</div>
+<div class="notice">⚠️ <b>Notice:</b> The "Third-party app" and "Share information" popups are NORMAL for all Pi apps. It comes from Pi Browser. We never ask for wallet passphrase.</div>
 
 <div id="tab-mine">
-<div class="balance-card">
-<img src="logo.png" class="logo-big">
-<div style="font-size:12px;opacity:.9">TOTAL 5LIFE MINED - MAINNET</div>
-<div style="font-size:38px;font-weight:900">⛏️ <span id="balance">0.00</span></div>
-<div style="font-size:12px;display:flex;gap:12px;justify-content:center"><span>⚡ <b id="rate">0.10</b>/s</span><span>🌍 <b id="geoBonus">+0%</b></span></div>
-</div>
-
+<div class="balance-card"><img src="logo.png" class="logo-big"><div style="font-size:12px;opacity:.9">TOTAL 5LIFE MINED - MAINNET</div><div style="font-size:38px;font-weight:900">⛏️ <span id="balance">0.00</span></div><div style="font-size:12px;display:flex;gap:12px;justify-content:center"><span>⚡ <b id="rate">0.10</b>/s</span><span>🌍 <b id="geoBonus">+0%</b></span></div></div>
 <div class="mine-circle" id="mineCircle"><div class="inner"><div style="font-size:40px">⛏️</div><div id="mineStatus" style="font-size:12px;font-weight:700">NOT MINING</div><div id="balanceMini" style="font-size:14px;color:#0d7a3a;font-weight:800">0.00</div></div></div>
-
 <div class="timer-card"><div><b>⏰ Session</b><br><small>24h reset</small></div><div id="timer" style="font-family:monospace;font-weight:800;font-size:18px">24:00:00</div></div>
-
-<button class="btn-main btn-pay" id="connectBtn" onclick="login()" style="background:#0d7a3a;color:white">🔗 Connect Pi Mainnet</button>
+<button class="btn-main" id="connectBtn" onclick="login()" style="background:#0d7a3a;color:white">🔗 Connect Pi Mainnet</button>
 <button class="btn-main btn-mine" id="mineBtn" onclick="toggleMining()" style="display:none">▶️ Start Mining</button>
 <button class="btn-main btn-geo" id="geoBtn" onclick="checkLocation()" style="display:none">📍 Enable GEO +25%</button>
-
-<button class="btn-main btn-pay" onclick="showTab('wallet')">👛 Open 5LIFE PAY - Zero Fee</button>
+<button class="btn-main btn-pay" onclick="showTab('wallet')">👛 Open 5LIFE PAY</button>
 <div class="pay-card"><b>🏆 Top Miners</b><div id="leaderList" style="margin-top:8px;font-size:13px"></div></div>
 </div>
 
@@ -58,17 +47,25 @@ body{background:#fffbeb;height:100vh;display:flex;flex-direction:column;overflow
 <b>5LIFE PAY - MAINNET</b>
 <div class="badge">Issuer: GD3OIJAV...2BS ✅</div>
 <div class="badge">Rate: 1 Pi = 555 5LIFE</div>
-<div class="badge">Pay Wallet (off-chain, zero fee): <b id="payWalletBal">0</b></div>
+<div class="badge">Pi Wallet (on-chain, with fee): <b id="piWalletBal">0</b> Pi</div>
+<div class="badge">Pay Wallet (off-chain, zero fee): <b id="payWalletBal">0 5LIFE</b></div>
 
-<button class="btn-main" style="background:#000;color:#fff" onclick="topUpDirect()">2. Top-up 1 Pi = 555 5LIFE (Real Pi Payment)</button>
-<button class="btn-main" style="background:#0d7a3a;color:#fff" onclick="claimMining()">3. Claim Mining -> PAY</button>
-<hr style="margin:12px 0">
-<input id="sendTo" class="input" placeholder="@username"><input id="amount" class="input" type="number" placeholder="Amount">
+<button class="btn-main" style="background:#fff;color:#000;border:1px solid #000" onclick="showTrustlineInfo()">1. Add Trustline (Pi Wallet) Info</button>
+<button class="btn-main" style="background:#000;color:#fff" onclick="topUpDirect()">2. Pi Wallet -> PAY Wallet: Top-up 1 Pi = 555 5LIFE</button>
+<button class="btn-main" style="background:#0d7a3a;color:#fff" onclick="claimMining()">3. Mining -> PAY Wallet: Claim to PAY (zero fee)</button>
+
+<hr style="margin:14px 0">
+<h4>Send Options (Restored)</h4>
+<input id="sendTo" class="input" placeholder="@username - for PAY to PAY">
+<input id="amount" class="input" type="number" placeholder="Amount">
 <button class="btn-main" onclick="startScan()">📷 Scan PAY QR</button><div id="qr-reader"></div>
-<button class="btn-main" style="background:#d4a017;color:#000" onclick="sendPay()">Send Zero Fee</button>
+
+<button class="btn-main" style="background:#d4a017;color:#000" onclick="sendPay()">A. PAY Wallet -> PAY Wallet (Zero Fee, @username)</button>
+<button class="btn-main" style="background:#222;color:white" onclick="withdrawToPiWallet()">B. PAY Wallet -> Pi Wallet (On-Chain Withdraw, with fee)</button>
+
+<p style="font-size:11px;color:#666;margin-top:8px">A = off-chain, instant, zero fee. B = on-chain, requires trustline, has Pi network fee. Both restored.</p>
 </div>
 </div>
-<p id="status" style="text-align:center;font-size:12px;color:#666"></p>
 </div>
 
 <div class="bottom-nav">
@@ -78,10 +75,8 @@ body{background:#fffbeb;height:100vh;display:flex;flex-direction:column;overflow
 </div>
 
 <script>
-const ISSUER="GD3OIJAV677OHQDZ25QXVDMWAD3AKJ6CGBMXKXZLGTBVUFC4TN2EX2BS";
-const RATE=555;
+const ISSUER="GD3OIJAV677OHQDZ25QXVDMWAD3AKJ6CGBMXKXZLGTBVUFC4TN2EX2BS";const ASSET="5LIFE";const RATE=555;
 Pi.init({version:"2.0",sandbox:false});
-
 let username=localStorage.getItem('5life_user_main')||null;
 let balance=parseFloat(localStorage.getItem('5life_balance_main')||'0');
 let sessionStart=parseInt(localStorage.getItem('5life_session_main')||'0');
@@ -106,18 +101,8 @@ function updateLeaderboard(){const board=JSON.parse(localStorage.getItem('5life_
 function restore(){if(username){document.getElementById('userBadge').innerText='@'+username;document.getElementById('connectBtn').style.display='none';document.getElementById('mineBtn').style.display='block';document.getElementById('geoBtn').style.display='block';}if(sessionStart && Date.now()-sessionStart<86400000){let el=Math.floor((Date.now()-lastUpdate)/1000);if(el>0)balance+=el*getRate();setTimeout(()=>{if(!mining)toggleMining();},800);}updateUI();updateLeaderboard();}restore();
 
 async function login(){
- try{
-  const auth=await Pi.authenticate(['username','payments'],()=>{});
-  username=auth.user.username;
-  localStorage.setItem('5life_user_main',username);
-  document.getElementById('userBadge').innerText='@'+username;
-  document.getElementById('connectBtn').style.display='none';
-  document.getElementById('mineBtn').style.display='block';
-  document.getElementById('geoBtn').style.display='block';
-  updateUI();updateLeaderboard();
- }catch(e){alert("Connect failed: "+e.message);}
+ try{const auth=await Pi.authenticate(['username','payments'],()=>{});username=auth.user.username;localStorage.setItem('5life_user_main',username);document.getElementById('userBadge').innerText='@'+username;document.getElementById('connectBtn').style.display='none';document.getElementById('mineBtn').style.display='block';document.getElementById('geoBtn').style.display='block';updateUI();updateLeaderboard();}catch(e){alert("Connect failed: "+e.message);}
 }
-
 function toggleMining(){
  if(!mining){
   if(!sessionStart || Date.now()-sessionStart>86400000){sessionStart=Date.now();localStorage.setItem('5life_session_main',sessionStart);}
@@ -129,29 +114,45 @@ function toggleMining(){
  }else{mining=false;clearInterval(interval);clearInterval(timerInterval);localStorage.setItem('5life_last_main',Date.now());document.getElementById('mineBtn').innerText='▶️ Start Mining';document.getElementById('mineBtn').className='btn-main btn-mine';document.getElementById('mineCircle').classList.remove('active');document.getElementById('mineStatus').innerText='PAUSED';}
 }
 function checkLocation(){navigator.geolocation.getCurrentPosition(()=>{geoEnabled=true;localStorage.setItem('5life_geo_main','1');updateUI();},()=>{alert('Enable GPS');});}
-
+function showTrustlineInfo(){alert(`Add Trustline in Pi Wallet:\n\n1. Open Pi Browser -> Wallet\n2. Add Asset -> Custom\n3. Code: ${ASSET}\n4. Issuer: ${ISSUER}\n\nThis allows Pi Wallet to receive real 5LIFE on-chain.`);}
 async function topUpDirect(){
  if(!username) return alert("Connect Pi first");
  try{
   await Pi.createPayment({amount:1,memo:`Top-up ${RATE} 5LIFE for @${username}`,metadata:{rate:RATE, user:username}},{
    onReadyForServerApproval: async (paymentId)=>{
     console.log("Approving ", paymentId);
-    try{
-      await fetch('https://fivelifegeo.github.io/api/approve', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({paymentId})});
-    }catch(e){console.log("No backend yet, continue for test"); }
+    try{await fetch('https://fivelifegeo5.github.io/api/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId})});}catch(e){}
    },
    onReadyForServerCompletion: async (paymentId, txid)=>{
-    console.log("Complete ", paymentId, txid);
-    let pb=getPayBal()+RATE; setPayBal(pb); updateUI();
-    alert(`+${RATE} 5LIFE added to @${username} PAY Wallet! TX: ${txid}`);
+    let pb=getPayBal()+RATE; setPayBal(pb); updateUI(); alert(`✅ +${RATE} 5LIFE to PAY Wallet @${username}! TX: ${txid}`);
    },
-   onCancel: ()=>{alert("Payment cancelled");},
-   onError: (e)=>{alert("Payment error: "+e.message);}
+   onCancel: ()=>alert("Payment cancelled"), onError: (e)=>alert("Payment error: "+e.message)
   });
  }catch(e){alert("Top-up error: "+e.message);}
 }
-
-function claimMining(){if(balance<=0) return alert("No mined balance"); let pb=getPayBal()+balance; setPayBal(pb); alert(`Claimed ${balance.toFixed(2)} 5LIFE`); balance=0; updateUI();}
+function claimMining(){if(balance<=0) return alert("No mined balance"); let pb=getPayBal()+balance; setPayBal(pb); alert(`✅ Claimed ${balance.toFixed(2)} 5LIFE to PAY`); balance=0; updateUI();}
 function startScan(){const div=document.getElementById('qr-reader'); if(html5QrCode && html5QrCode.isScanning){html5QrCode.stop(); div.innerHTML=''; return;} html5QrCode=new Html5Qrcode("qr-reader"); html5QrCode.start({facingMode:"environment"},{fps:10,qrbox:250},(txt)=>{let v=txt; if(v.includes('5LIFE-PAY:')) v=v.split('5LIFE-PAY:')[1]; v=v.replace('@','').trim(); document.getElementById('sendTo').value=v; html5QrCode.stop(); div.innerHTML='';},()=>{});}
-function sendPay(){let to=document.getElementById('sendTo').value.trim().replace('@','').replace('5LIFE-PAY:',''); let amt=parseFloat(document.getElementById('amount').value); if(!to||!amt) return alert("Enter @username and amount"); let pb=getPayBal(); if(amt>pb) return alert("Insufficient PAY balance"); setPayBal(pb-amt); let toKey='pay_main_'+to; let toBal=parseFloat(localStorage.getItem(toKey)||'0')+amt; localStorage.setItem(toKey,toBal); updateUI(); alert(`Sent ${amt} 5LIFE to @${to}`);}
+
+// A. PAY WALLET TO PAY WALLET - ZERO FEE - RESTORED
+function sendPay(){
+ let to=document.getElementById('sendTo').value.trim().replace('@','').replace('5LIFE-PAY:','');
+ let amt=parseFloat(document.getElementById('amount').value);
+ if(!to||!amt) return alert("Enter @username and amount");
+ let pb=getPayBal(); if(amt>pb) return alert("Insufficient PAY balance");
+ setPayBal(pb-amt);
+ let toKey='pay_main_'+to;
+ let toBal=parseFloat(localStorage.getItem(toKey)||'0')+amt;
+ localStorage.setItem(toKey,toBal);
+ updateUI(); alert(`✅ Sent ${amt} 5LIFE to @${to} - PAY to PAY ZERO FEE!`);
+}
+
+// B. PAY WALLET TO PI WALLET (ON-CHAIN) - WITH FEE - RESTORED
+function withdrawToPiWallet(){
+ let amt=parseFloat(document.getElementById('amount').value);
+ if(!amt) return alert("Enter amount to withdraw");
+ let pb=getPayBal(); if(amt>pb) return alert("Insufficient PAY balance");
+ if(!confirm(`Withdraw ${amt} 5LIFE from PAY Wallet to your Pi Wallet (on-chain)? This will require trustline and has Pi network fee.`)) return;
+ setPayBal(pb-amt); updateUI();
+ alert(`Withdrawal request for ${amt} 5LIFE created.\n\nNext step: Our issuer ${ISSUER} will send ${amt} ${ASSET} to your Pi Wallet on-chain. Please make sure you added the trustline first.\n\n[In production, this calls your backend to send real asset]`);
+}
 </script></body></html>
